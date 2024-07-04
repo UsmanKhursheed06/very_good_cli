@@ -40,6 +40,7 @@ class VeryGoodCommandRunner extends CompletionCommandRunner<int> {
     addCommand(PackagesCommand(logger: _logger));
     addCommand(TestCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: pubUpdater));
+    addCommand(EnvCommand(logger: _logger));  // Register the new command
   }
 
   /// Standard timeout duration for the CLI.
@@ -182,5 +183,27 @@ Don't forget to fill out this form to get information on future updates and rele
       }
       return Directory(path.join(dirPath!, '.very_good_cli'));
     }
+  }
+}
+
+/// New Command to display environment variables.
+class EnvCommand extends Command<int> {
+  EnvCommand({required Logger logger}) : _logger = logger;
+
+  final Logger _logger;
+
+  @override
+  String get description => 'Displays environment variables.';
+
+  @override
+  String get name => 'env';
+
+  @override
+  Future<int> run() async {
+    _logger.info('Environment Variables:');
+    Platform.environment.forEach((key, value) {
+      _logger.info('$key=$value');
+    });
+    return ExitCode.success.code;
   }
 }
